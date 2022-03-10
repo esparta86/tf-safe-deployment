@@ -1,0 +1,17 @@
+# **/infra/.terraform/*
+
+# infra/.terraform/
+
+*.tfstate
+*.tfstate.*git st
+
+#*.terraform.lock.hcl
+.terraform.tfstate.*
+terraform.tfstate.*
+
+*.log
+
+
+*.tfvars
+# aws/demo-aws-lambda/.terraform/
+# aws/demo-terraform-aws-instance/.terraform/providers/registry.terraform.io/hashicorp/aws/3.74.1/windows_386/terraform-provider-aws_v3.74.1_x5.exe
