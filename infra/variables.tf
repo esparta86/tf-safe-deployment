@@ -34,3 +34,12 @@ variable "version_eks_deployment" {
   description = "version cluster"
   type        = string
 }
+
+
+
+variable "development_vpc_cidr" {
+  description = "cidr for vpc"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+

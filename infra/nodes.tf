@@ -3,7 +3,7 @@
 resource "aws_iam_role" "nodes" {
   name = "eks-node-group-nodes"
 
-  assume_role_policy =  jsonencode({
+  assume_role_policy = jsonencode({
     Statement = [{
       Action = "sts:AssumeRole"
       Effect = "Allow"
@@ -36,18 +36,36 @@ resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadO
 
 
 
+# We should filter only private networks
+data "aws_subnets" "private_subnets_ids" {
+    depends_on = [
+    aws_vpc.main_vpc
+  ]
+
+  filter {
+    name = "vpc-id"
+    values = [aws_vpc.main_vpc.id]
+  }
+
+  tags = {
+    "tier" = "Private"
+  }
+}
+
 
 
 resource "aws_eks_node_group" "private-nodes" {
   cluster_name = aws_eks_cluster.eks-deployment.name
 
   node_group_name = "private-nodes-eks-deployment"
-  node_role_arn = aws_iam_role.nodes.arn
-  
-  subnet_ids = [
-      aws_subnet.eks-private-us-east-1a.id,
-      aws_subnet.eks-private-us-east-1b.id
-  ]
+  node_role_arn   = aws_iam_role.nodes.arn
+
+  # subnet_ids = [
+  #   aws_subnet.eks-private-us-east-1a.id,
+  #   aws_subnet.eks-private-us-east-1b.id
+  # ]
+
+  subnet_ids = data.aws_subnets.private_subnets_ids.ids
 
   capacity_type = "ON_DEMAND"
 
@@ -55,8 +73,8 @@ resource "aws_eks_node_group" "private-nodes" {
 
   scaling_config {
     desired_size = 2
-    max_size = 4
-    min_size = 2
+    max_size     = 4
+    min_size     = 2
   }
 
   update_config {
@@ -67,7 +85,7 @@ resource "aws_eks_node_group" "private-nodes" {
   labels = {
     "role" = "deployment"
   }
-  
+
 
 
 }
