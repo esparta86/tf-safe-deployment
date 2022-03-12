@@ -1,5 +1,4 @@
-
-
+#  This file stores all variables to avoid stiky codes in tf files
 variable "region" {
   default = "us-east-1"
 }
@@ -22,6 +21,7 @@ variable "default_tags" {
   type        = map(string)
 }
 
+# Name for deployment EKS cluster
 variable "cluster_deployment_name" {
   default     = "eks_deployment01"
   description = "Cluster name"
@@ -29,7 +29,7 @@ variable "cluster_deployment_name" {
 }
 
 
-variable "version_eks" {
+variable "version_eks_deployment" {
   default     = "1.20"
   description = "version cluster"
   type        = string
