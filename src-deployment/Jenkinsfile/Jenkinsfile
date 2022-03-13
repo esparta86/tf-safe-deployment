@@ -140,6 +140,7 @@ stages {
           script{
               if(currentBuild.changeSets.size() > 0) {
                     changesCommit = 'TRUE'
+                    git branch: 'testing-hard', url: 'https://github.com/esparta86/tf-safe-deployment'
                 }
                 else {
                     changesCommit = 'FALSE'
