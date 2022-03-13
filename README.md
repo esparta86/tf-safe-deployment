@@ -14,8 +14,10 @@ en un hello world app, realizada en Spring Boot con Java 16
   - k8s Directorio que contiene los manifest para un objeto deploymento y servicio en EKS
   - Dockerfile Contiene la sintaxis necesaria para construir una imagen de docker usando **maven:3.8.3-openjdk-16** y **openjdk:16-jdk-buster**
 
-  
 
+<p align="center">
+  <img src="./img/helloworldapp.png" alt="Simple hello world from EKS" width="738">
+</p>
 
 - Instale  AWS CLI en Windows usando
   choco install awscli
