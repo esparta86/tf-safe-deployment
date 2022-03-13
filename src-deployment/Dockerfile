@@ -1,19 +1,24 @@
+ # local build command : docker build -t lisandro.rafaelano/helloworld16 .
+
 FROM maven:3.8.3-openjdk-16 AS build
 
 RUN mkdir -p /usr/src/application-src
-COPY helloWorld17/ /usr/src/application-src/
+COPY helloworld16/ /usr/src/application-src/
 
 WORKDIR /usr/src/application-src/
 
 RUN mvn clean install
 
+RUN ls -ls /usr/src/application-src/target/
+
 
 FROM openjdk:16-jdk-buster
+#FROM tomcat:10.1.0-jdk11-openjdk-buster
 
 RUN mkdir /usr/app
-
-COPY --from=build /usr/src/application-src/target/helloWorld17-0.0.1-SNAPSHOT.jar /usr/app/helloWorld17-0.0.1-SNAPSHOT.jar
+# RUN rm -rf /usr/local/tomcat/webapps/*
+COPY --from=build /usr/src/application-src/target/helloworld16.jar /usr/app
 
 WORKDIR /usr/app
 
-ENTRYPOINT ["java","-jar","helloWorld17-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","helloworld16.jar"]
