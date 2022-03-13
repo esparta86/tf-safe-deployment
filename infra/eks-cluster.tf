@@ -24,6 +24,9 @@ resource "aws_iam_role_policy_attachment" "eks-amazonEKSClusterPolicy" {
 }
 
 
+
+
+# Retrieving all subnets with tag eks=deployment
 data "aws_subnets" "subnetsids" {
   depends_on = [
     aws_vpc.main_vpc

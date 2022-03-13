@@ -58,6 +58,94 @@ resource "aws_subnet" "eks_public_subnet" {
 
 }
 
+# ----------------- VPC SUBNETS FOR SECOND CLUSTER -------------------------
+
+
+
+# Calculate how many subnets related to first EKS
+
+data "aws_subnets" "list_subnets_deployment_eks_ids" {
+    depends_on = [
+    aws_vpc.main_vpc, aws_subnet.eks_private_subnet, aws_subnet.eks_public_subnet
+  ]
+
+  filter {
+    name = "vpc-id"
+    values = [aws_vpc.main_vpc.id]
+  }
+
+  tags = {
+    "eks" = "deployment"
+  }
+}
+
+
+resource "aws_subnet" "eks_private_subnet_development" {
+  depends_on = [
+    aws_vpc.main_vpc, aws_subnet.eks_private_subnet, aws_subnet.eks_public_subnet
+  ]
+  count             = length(data.aws_availability_zones.available.names)
+  vpc_id            = aws_vpc.main_vpc.id
+  availability_zone = element(data.aws_availability_zones.available.names, count.index)
+  cidr_block              = cidrsubnet(var.development_vpc_cidr, 8,length(data.aws_subnets.list_subnets_deployment_eks_ids.ids) + count.index + 1)
+
+  tags = merge(var.default_tags, {
+    "Name"                            = "eks_private_subnet_development-${count.index}-${element(data.aws_availability_zones.available.names, count.index)}"
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/demo"      = "owned"
+    "tier" = "Private"
+    "eks" = "development"
+  })
+
+}
+
+
+
+data "aws_subnets" "all_list_subnets_deployment_eks_ids" {
+    depends_on = [
+    aws_vpc.main_vpc, aws_subnet.eks_private_subnet, aws_subnet.eks_public_subnet,aws_subnet.eks_private_subnet_development
+  ]
+
+  filter {
+    name = "vpc-id"
+    values = [aws_vpc.main_vpc.id]
+  }
+
+  filter {
+    name = "tag:eks"
+    values = ["deployment", "development" ]
+  }
+  
+}
+
+
+# sticky  10
+# Because We need to improve how to filter all subnets
+
+
+resource "aws_subnet" "eks_public_subnet_development" {
+  depends_on = [
+    aws_vpc.main_vpc, aws_subnet.eks_private_subnet, aws_subnet.eks_public_subnet,aws_subnet.eks_private_subnet_development
+  ]
+  count             = length(data.aws_availability_zones.available.names)
+  vpc_id            = aws_vpc.main_vpc.id
+  availability_zone = element(data.aws_availability_zones.available.names, count.index)
+  cidr_block              = cidrsubnet(var.development_vpc_cidr, 8,  count.index + 10)
+
+  tags = merge(var.default_tags, {
+    "Name"                            = "eks_public_subnet_development-${count.index}-${element(data.aws_availability_zones.available.names, count.index)}"
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/demo"      = "owned"
+    "tier" = "Public"
+    "eks" = "development"
+  })
+
+}
+
+
+
+
+
 
 
 # resource "aws_subnet" "eks-private-us-east-1a" {

@@ -43,3 +43,12 @@ variable "development_vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
+
+
+
+# Name for deployment EKS cluster
+variable "cluster_development_name" {
+  default     = "eks_development01"
+  description = "Cluster name"
+  type        = string
+}

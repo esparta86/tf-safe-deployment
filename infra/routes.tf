@@ -49,24 +49,27 @@ resource "aws_route_table_association" "publicRTassociation" {
 
 
 
-# resource "aws_route_table_association" "private-us-east-1a" {
-#   subnet_id      = aws_subnet.eks-private-us-east-1a.id
-#   route_table_id = aws_route_table.private.id
-# }
 
-# resource "aws_route_table_association" "private-us-east-1b" {
-#   subnet_id      = aws_subnet.eks-private-us-east-1b.id
-#   route_table_id = aws_route_table.private.id
-# }
+# --------------------------ROUTES ASSOCIATION FOR DEVELOPMENT CLUSTER ----------------------------
+
+# Route table Association with private Subnet's
+# We are going to use the same route for all subnets.
+resource "aws_route_table_association" "privateRTassociationDev" {
+  count          = length(data.aws_availability_zones.available.names)
+  subnet_id      = element(aws_subnet.eks_private_subnet_development.*.id, count.index)
+  route_table_id = aws_route_table.private.id
+}
 
 
-# resource "aws_route_table_association" "public-us-east-1a" {
-#   subnet_id      = aws_subnet.eks-public-us-east-1a.id
-#   route_table_id = aws_route_table.public.id
-# }
 
-# resource "aws_route_table_association" "public-us-east-1b" {
-#   subnet_id      = aws_subnet.eks-public-us-east-1b.id
-#   route_table_id = aws_route_table.public.id
-# }
+
+# Route table Association with public Subnet's
+# We are going to use the same route for all subnets.
+resource "aws_route_table_association" "publicRTassociationDev" {
+  count          = length(data.aws_availability_zones.available.names)
+  subnet_id      = element(aws_subnet.eks_public_subnet_development.*.id, count.index)
+  route_table_id = aws_route_table.public.id
+}
+
+
 
