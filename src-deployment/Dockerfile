@@ -13,10 +13,9 @@ RUN ls -ls /usr/src/application-src/target/
 
 
 FROM openjdk:16-jdk-buster
-#FROM tomcat:10.1.0-jdk11-openjdk-buster
 
 RUN mkdir /usr/app
-# RUN rm -rf /usr/local/tomcat/webapps/*
+
 COPY --from=build /usr/src/application-src/target/helloworld16.jar /usr/app
 
 WORKDIR /usr/app

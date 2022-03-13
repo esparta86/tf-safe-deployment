@@ -1,0 +1,123 @@
+##########################################################################################################################
+#   2019  Lisandro Antonio Rafaelano Colocho
+#
+#  This is a template to use in order to deploy apps into the cluster
+#  We are going to use a deployment it is a controller.
+#  BUT K8S supports other controllers 
+#      - Replicaset
+#      - ReplicationController
+#      - StatefulSets
+#      - DaemonSet
+#      
+############################################################################################################################
+apiVersion: apps/v1  # https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/
+kind: Deployment  # You should add the kind of object in our case a deployment that it is a controller, it will help us to update pods and replicasets objects.
+metadata:
+  # Please follow naming standar for deployment name
+  # Please avoid blank spaces and special characters
+  # It must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character 
+  # 
+  # 1-) start with app name
+  #   It should be a singular 
+  #   It should be significal
+  #   If the app is GLOBAL then start with global word like this : global-appname-branchname
+  #    
+  # 2-) branch name :  testing |  master |  development 
+  #
+  # 3-) If deployment has been worked as frontend or backend
+  #        global-appname-branch-(backend|frontend)
+  #
+  # 4-) If servicenow or salesforce did the request to deploy on k8s
+  #         global-appname-brach-(backend|frontend)-(salesforce|snow)
+  #
+  name:  global-hello-world-frontend  # appname-branchname
+  # [START STRATEGY LABELS] 
+  labels:
+    name: global-hello-world-frontend
+    type_component: webapp
+    language: java
+    owner: devops 
+    managed-by: jenkins
+    environment: development
+    region: global
+  # [END STRATEGY LABELS]
+spec:
+  revisionHistoryLimit: 5  # In testing cluster
+  #revisionHistoryLimit: 10  # In production Cluster
+  replicas: 2  # how many pods will run
+  # [START STRATEGY DEPLOYMENT]  
+  strategy:    #  this is how Kubernetes does the release when there are new changes (enhancements), Please see : https://github.com/ContainerSolutions/k8s-deployment-strategies
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+   # [END STRATEGY DEPLOYMENT] 
+  # [START SELECTOR]  
+  selector:
+    matchLabels:
+      name: global-hello-world-frontend
+      environment: development
+  # [END SELECTOR]
+  template:
+    metadata:
+    # [START STRATEGY LABELS]
+      labels:
+        name: global-hello-world-frontend
+        type_component: webapp
+        language: java
+        owner: devops 
+        managed-by: jenkins
+        environment: development
+        region: global
+    # [END STRATEGY LABELS]  
+    spec:
+      # nodeSelector:
+      #   team: di-web
+      #   owner: is
+    # [END NODE AFFINITY PRODUCTION]                      
+      containers:
+        # docker images PATH, it could be ti-ca-infrastructure or ti-is-devenv-01 Please NEVER add external container registry in order to avoid security hole
+        # Please refer to the format on the name.
+      - image: esparta2018/hello-bank:v1 
+        # use lower case and underscore to join with other word in container_name
+        # It will be useful in order to identify the container if there are more than one in one POD
+        name: hello
+        # [START ASSIGN RESOURCES]
+        # This section we are going to assign cpu and memory resources to new container
+        # Why do we do this ? if we will do that, we will help to scheduler process in k8s in order to facilite the scheduler task
+        # Also this is like a  constraint in order to avoid overuse resource
+        # please read the following resources in order to unsderstand it.
+        # cpu : https://medium.com/@betz.mark/understanding-resource-limits-in-kubernetes-cpu-time-9eff74d3161b
+        # memory : https://medium.com/@betz.mark/understanding-resource-limits-in-kubernetes-memory-6b41e9a955f9
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1024Mi"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+        # [END ASSIGN RESOURCES]
+        # [START VARIABLES]
+        # In this section you can initialize env variables it will be helpful in order to avoid sticky configurations inside container or your code
+        # a good example could be the database user and password 
+        # cloud sql configurations.
+        # You can create configmap objets and read them in order to initialize the variable like this
+        #
+        # - name: VARIABLE_1
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       key: CUSTOM_VARIABLE1
+        #       name: configmap-config-microserviceservice # configmap name
+        env:
+        - name:  ENVVARNAME
+          value:  ENVVARVALUE       
+        # [END VARIABLES]
+        # [START PORTS]
+        # Remember the docker images should have a sentente like this : EXPOSE 443
+        # You can expose more than one port if you need.
+        ports:
+        - containerPort: 8080
+          name: web
+        # [END PORTS]
+        # [START MOUNTS]
+        # This section will help us in mount the specified volumes.
