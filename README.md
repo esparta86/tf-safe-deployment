@@ -32,10 +32,10 @@ El directorio **infra** contiene los archivos necesarios para realizar el provis
 
 Archivos:
 
-*`provider.tf`  Contiene la seleccion del cloud provider elegido **AWS** , Donde definimos la version, region y profile del mismo
-*`vpc-subnets.tf` Contiene la declaracion de los recursos como **VPC**,**Zonas Disponibles**, **subnets**
-*`variables.tf` Contiene la declaracion de aquellos valores que requerimos que no sean estaticos y nos permitan hacer actualizaciones de una forma mas rapida y confiable
-*`nat.tf` Como estamos provisionando redes privadas para nuestro EKS. Es necesario **NAT** para asegurarnos que el EKS cluster podra bajar recursos de **Internet**
+*`provider.tf`  Contiene la seleccion del cloud provider elegido **AWS** , Donde definimos la version, region y profile del mismo.
+*`vpc-subnets.tf` Contiene la declaracion de los recursos como **VPC**,**Zonas Disponibles**, **subnets**.
+*`variables.tf` Contiene la declaracion de aquellos valores que requerimos que no sean estaticos y nos permitan hacer actualizaciones de una forma mas rapida y confiable.
+*`nat.tf` Como estamos provisionando redes privadas para nuestro EKS. Es necesario **NAT** para asegurarnos que el EKS cluster podra bajar recursos de **Internet**.
 *`igw.tf` Contiene la declaracion del recurso **Internet Gateway** Componente asociado a la VPC para que nuestras ***subnets** tengan comunicacion con internet y a la vez ejecute tareas de **NAT** para instancias.
 
 
