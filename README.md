@@ -26,7 +26,7 @@ en un hello world app, realizada en Spring Boot con Java 16
   $ aws configure
 
 
-## Provisionando la infrastructura en AWS
+## Descripcion de los archivos de Terraform para el aprovisionamiento de la infrastructura en AWS
 
 El directorio **infra** contiene los archivos necesarios para realizar el provisionamiento de la infrastructura.
 
@@ -37,6 +37,42 @@ Archivos:
 * `variables.tf` Contiene la declaracion de aquellos valores que requerimos que no sean estaticos y nos permitan hacer actualizaciones de una forma mas rapida y confiable.
 * `nat.tf` Como estamos provisionando redes privadas para nuestro EKS. Es necesario **NAT** para asegurarnos que el EKS cluster podra bajar recursos de **Internet**.
 * `igw.tf` Contiene la declaracion del recurso **Internet Gateway** Componente asociado a la VPC para que nuestras ***subnets** tengan comunicacion con internet y a la vez ejecute tareas de **NAT** para instancias.
+* `routes.tf` Contiene las rutas establecidas para las redes publicas y privadas (internet gateway para Publica y NAT para privadas), Tambien posee las asociaciones entre las rutas y las subnets.
+* `eks-cluster.tf` Contiene la definicion del **IAM** role  y el provisionamiento del cluster de **deployment**.
+* `eks-cluster-deployment.tf` Contiene la definicion del **IAM** role  y el provisionamiento del cluster de **development**.
+* `nodes.tf` Contiene la definicion del iam y policies para el manejo del **eks** cluster, hace uso de un data source para seleccionar todas las redes solo para el **EKS cluster** de **deployment**.
+* `nodes-development.tf` Contiene la definicion del iam y policies para el manejo del **eks** cluster, hace uso de un data source para seleccionar todas las redes solo para el **EKS cluster** de **development**.
+* `iam-oidc.tf` Contiene la definicion de un **Identity Provider** para los **EKS** de **development** y **deployment** ,esto nos ayudara a asociar una **IAM role** con **Services accounts** del **EKS**.
+
+
+
+## Diagrama de la solucion
+
+
+
+
+## Pasos para el aprovisionamiento
+
+Se requiere:
+
+* Instalacion de AWS-CLI en su maquina 
+* Configuracion usando : aws configure  y proviendo el KEY ID y PASS
+* Se requiere tener instalado terraform
+
+1. Usando la terminal, vaya al directorio  tf-safe-deployment/infra
+2. Ejecute el comando de inicializacion
+    ```sh
+     $ terraform init
+    ```
+3. Ejecute el commando de planeacion
+    ```sh
+     $ terraform plan
+    ```
+3. Ejecute el commando de provisionamiento
+    ```sh
+     $ terraform apply
+    ```
+
 
 
 

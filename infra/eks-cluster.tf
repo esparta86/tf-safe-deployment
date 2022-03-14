@@ -49,13 +49,6 @@ resource "aws_eks_cluster" "eks-deployment" {
 
   role_arn = aws_iam_role.eks-role.arn
   vpc_config {
-    # subnet_ids = [
-    #   aws_subnet.eks-private-us-east-1a.id,
-    #   aws_subnet.eks-private-us-east-1b.id,
-    #   aws_subnet.eks-public-us-east-1a.id,
-    #   aws_subnet.eks-public-us-east-1b.id
-    # ]
-
     subnet_ids = data.aws_subnets.subnetsids.ids
   }
 

@@ -25,11 +25,6 @@ resource "aws_eks_node_group" "private-nodes-development" {
   node_group_name = "private-nodes-eks-development"
   node_role_arn   = aws_iam_role.nodes.arn
 
-  # subnet_ids = [
-  #   aws_subnet.eks-private-us-east-1a.id,
-  #   aws_subnet.eks-private-us-east-1b.id
-  # ]
-
   subnet_ids = data.aws_subnets.private_subnets_development_ids.ids
 
   capacity_type = "ON_DEMAND"
