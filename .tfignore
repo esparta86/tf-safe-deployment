@@ -1,0 +1,11 @@
+**/infra/.terraform/*
+
+
+.terraform.tfstate.*
+terraform.tfstate.*
+
+
+*.log
+
+
+*.tfvars

@@ -1,0 +1,32 @@
+##########################################################################################################################
+#  Lisandro Antonio Rafaelano Colocho
+#
+# We are using nodeport when we are going to create an ingress controller
+# Because it helps to create a backendService and the default healthcheck is going to check on that port if 
+# the app still live
+# 
+############################################################################################################################
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: global-helloworldfrontend-nodeport-svc
+  labels:
+    name: global-hello-world-frontend
+    type_component: webapp
+    language: java
+    owner: devops 
+    managed-by: jenkins
+    environment: development
+    region: global
+spec:
+   # [START SELECTOR] 
+  selector:
+    name: global-hello-world-frontend
+    environment: development
+   # [END SELECTOR] 
+  type: NodePort
+  ports:
+  - name: web
+    port: 8080
+    targetPort: 8080
