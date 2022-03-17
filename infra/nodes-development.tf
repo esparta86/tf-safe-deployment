@@ -2,24 +2,29 @@
 
 # We should filter only private networks
 data "aws_subnets" "private_subnets_development_ids" {
-    depends_on = [
-    aws_vpc.main_vpc, aws_subnet.eks_private_subnet, aws_subnet.eks_public_subnet,aws_subnet.eks_private_subnet_development,aws_subnet.eks_public_subnet_development
+  depends_on = [
+    aws_vpc.main_vpc, aws_subnet.eks_private_subnet_development, aws_subnet.eks_public_subnet_development
   ]
 
   filter {
-    name = "vpc-id"
+    name   = "vpc-id"
     values = [aws_vpc.main_vpc.id]
   }
 
   tags = {
     "tier" = "Private"
-    "eks" = "development"
+    "eks"  = "development"
   }
 }
 
 
 
 resource "aws_eks_node_group" "private-nodes-development" {
+
+  depends_on = [
+    aws_vpc.main_vpc, aws_subnet.eks_private_subnet_development, aws_subnet.eks_public_subnet_development, aws_eks_cluster.eks_development
+  ]
+
   cluster_name = aws_eks_cluster.eks_development.name
 
   node_group_name = "private-nodes-eks-development"
