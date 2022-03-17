@@ -48,9 +48,11 @@ Archivos:
 
 
 
-## Diagrama de la solucion
+## Solution diagram
 
-
+<p align="center">
+  <img src="./img/EKS.png" alt="Simple hello world from EKS" width="738">
+</p>
 
 
 ## Pasos para el aprovisionamiento
